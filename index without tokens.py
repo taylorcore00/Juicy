@@ -232,5 +232,4 @@ async def img(ctx, member: discord.Member = None): #comando para obtener la imag
     embed.set_footer(text=f"Comando usado por {ctx.author}")
     await ctx.reply(embed=embed)
 
-
 bot.run('T O K E N')
