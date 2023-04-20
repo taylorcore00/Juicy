@@ -222,5 +222,15 @@ async def userinfo(ctx, member: discord.Member = None): #COMANDO USERINFO
     embed.set_footer(text="user info | managed by: Taylor.dll#1539")
     await ctx.send(embed=embed)
 
+@bot.command()
+async def img(ctx, member: discord.Member = None): #comando para obtener la imagen del perfil de un user determinado
+    if member == None:
+        member = ctx.author
+    embed = discord.Embed(title="",description="",color=0x339CFF)
+    embed.set_image(url=member.avatar)
+    embed.set_author(name=member.name,icon_url=member.avatar)
+    embed.set_footer(text=f"Comando usado por {ctx.author}")
+    await ctx.reply(embed=embed)
+
 
 bot.run('T O K E N')
