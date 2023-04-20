@@ -1,7 +1,17 @@
+
+# »»————-　IMPORT DISCORD IMPORTANT　————-««
+
 import discord
 from discord.ext import commands
 from discord.ui import Button, View
 from discord import Embed, Message
+from discord.ext.commands import has_permissions, CheckFailure
+from discord.ext.commands import command, cooldown, MissingRequiredArgument, CommandNotFound, BadArgument, CommandOnCooldown
+# »»————-　FIN IMPORT DISCORD 　————-««
+
+
+# »»————-　IMPORT GENERAL　————-««
+
 import json
 import hashlib
 from virus_total_apis import PublicApi as VirusTotalPublicApi
@@ -9,19 +19,31 @@ import asyncio
 import datetime
 import pytz
 import requests
-arg_tz = pytz.timezone('America/Argentina/Buenos_Aires')
-bot = discord.ext.commands.Bot(command_prefix='.', intents = discord.Intents.all())
-start_time = datetime.datetime.now()
+from pytube import YouTube
+# »»————-　FIN IMPORT GENERAL 　————-««
 
+
+# »»————-　PROPIEDADES DEL BOT 　————-««
+bot = discord.ext.commands.Bot(command_prefix='.', intents = discord.Intents.all())
+bot.remove_command("help")
+# »»————-    FIN PROPIEDADES 　————-««
+
+# »»————-  VAR GENERALES 　————-««
+
+arg_tz = pytz.timezone('America/Argentina/Buenos_Aires')
+start_time = datetime.datetime.now()
 # message_id = 123456789012345678
 # channel_id = 1095505616459546644
 # channel = bot.get_channel(channel_id)
 # message = channel.fetch_message(message_id)
-
 # ID del canal permitido
-allowed_channel = 1095505616459546644
-    
+allowed_channel = 1095505616459546644  
+# »»————-  FIN VAR GENERALES 　————-««
 
+
+# »»————-———————————————————  EVENTOS DEL BOT 　———————————————————————-««
+
+# »»————-  ON READY + STATUS 　————-««
 @bot.event
 async def on_ready():
     embed = discord.Embed(title="",description="",color=0x00FF00)
@@ -44,6 +66,18 @@ async def on_ready():
         await status.edit(embed = embed)
         await bot.close()
 
+# »»————-  FIN ON READY + STATUS 　————-««
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, CommandNotFound):
+        tay = discord.Embed(timestamp=ctx.message.created_at, description ="➛ *Use* **.Help** *para ver todos los comandos disponibles*", color=0x3498db)
+        tay.set_author(name="Comando incorrecto o el mismo no existe", icon_url='https://cdn.discordapp.com/emojis/1097546086119375028.webp?size=96&quality=lossless')
+        tay.set_footer(text=f"menu error de comando | ")
+        await ctx.send(embed=tay)
+
+
+
+# »»————-  SISTEMA DE AUTO-ROLES CON BOTONES　————-««
 class Roles(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
@@ -79,11 +113,15 @@ class Roles(discord.ui.View):
             await interaction.response.send_message("Tu rol fue agregado con exito",ephemeral = True)
 
 @bot.command()
+@commands.has_permissions(administrator=True)
 async def roles(ctx):
     embed = discord.Embed(title="SISTEMA DE AUTO-ROLES",description="```\nHaz click en alguna reacción para adquirir o eliminar un role deseado.\n```",color=0x2596be)
     embed.set_footer(text="TayAssist",icon_url="https://media.discordapp.net/attachments/1001644299949183079/1097524781252882452/soporte-tecnico.png")
     await ctx.send(embed = embed,view = Roles())
+# »»————-  FIN SISTEMA DE AUTO-ROLES 　————-««
 
+
+# »»————-  MOSTRADOR DE IMAGENES GOOGLE (NO FIXED)　————-««
 # @bot.command
 # async def imagenes(ctx):
 #     if ctx.author == bot.user:
@@ -120,11 +158,14 @@ async def roles(ctx):
 #                 except:
 #                     break # el usuario no respondió dentro del tiempo límite
 
+# »»————-  FIN MOSTRADOR DE IMAGENES GOOGLE (NO FIXED)　————-««
 
 
+
+# »»————-  SCANNER URL WITH VIRUSTOTAL　————-««
 @bot.command()
 async def vtlink(ctx,link):
-    api = "API TOKEN VT"
+    api = "a p i v i r u s t o t a l"
     url = link
     vt = VirusTotalPublicApi(api)
     url_report = vt.get_url_report(url)
@@ -147,9 +188,12 @@ async def vtlink(ctx,link):
         embed.set_footer(text="scaneo de url | managed by: Taylor.dll#1539")
     await ctx.send(embed = embed)
 
+# »»————-————  FIN SCANNER URL 　————————-««
 
+
+# »»————-————  FORMULARIO DE MECANICO COMANDO PRIVADO 　————————-««
 @bot.command()
-async def form(ctx): #COMANDO PARA EL FORMULARIO DE MECANICO
+async def form(ctx): 
     role = discord.utils.get(ctx.guild.roles, id=1093897953854357625)
     aca = bot.get_guild(1072874852026961972)
     if role in ctx.author.roles: #es un if para comprobar si el que usa el comando esta en la lista de roles permitidos para acceder a esto
@@ -164,7 +208,11 @@ async def form(ctx): #COMANDO PARA EL FORMULARIO DE MECANICO
         embed = Embed(title="", color=0xFF4500)
         embed.set_footer(text=f"No tienes los suficientes permisos para ejecutar este comando o este comando solo se ejetuta en {aca.name}.",icon_url="https://cdn.staticcrate.com/stock-hd/effects/footagecrate-red-error-icon-prev-full.png")
         await ctx.send(embed = embed)
+# »»————-————  FIN FORMULARIO DE MECANICO 　————————-««
 
+
+
+# »»————-————  MENU HELP (ACTUALIZAR)　————————-««
 @bot.command()
 async def Help(ctx):
     aca = bot.get_guild(1072874852026961972)
@@ -179,34 +227,34 @@ async def Help(ctx):
     embed.add_field(name="",value="📩 Discord and support | `proximamente`",inline=False)
     embed.set_footer(text="menu help | managed by: Taylor.dll#1539")
     await ctx.reply(embed=embed)
+# »»————-————  FIN MENU HELP　————————-««
 
+
+
+# »»————-————  ENTRAR Y SALIR EN SERVICIO - COMANDO PRIVADO　————————-««
 @bot.command()
 async def entrar(ctx):
-    command_time = ctx.message.created_at
-    formatted_time = command_time.strftime("%H:%M:%S") 
     user = ctx.author
     await ctx.message.delete()
     emoji1 = discord.utils.get(bot.emojis, name='discordstaffgift')
-    embed = Embed(title=f"{emoji1} Información", description=f"{user.mention} ✅ ha **entrado** en servicio!", color=0x00ff00)
-    embed.add_field(name="Hora de entrada", value=f"{formatted_time}", inline=False)
-    embed.set_footer(text="entrada | managed by: Taylor.dll#1539")
+    embed = Embed(title=f"{emoji1} Información", description=f"{user.mention} ✅ ha **entrado** en servicio!", color=0x00ff00,timestamp=ctx.message.created_at)
+    embed.set_footer(text="Hora de entrada ")
     await ctx.send(embed=embed)
-
 @bot.command()
 async def salir(ctx):
-    command_time = ctx.message.created_at
-    formatted_time = command_time.strftime("%H:%M:%S") 
     role = discord.utils.get(ctx.guild.roles, id=1094752993112498317) #id del role mecanico
     user = ctx.author
     await ctx.message.delete()
     emoji1 = discord.utils.get(bot.emojis, name='discordstaffgift')
-    embed = Embed(title=f"{emoji1} Información", description=f"{user.mention} 📛 ha **salido** de servicio!", color=0x00FF0000)
-    embed.add_field(name="Hora de salida", value=f"{formatted_time}", inline=False)
-    embed.set_footer(text="salida | managed by: Taylor.dll#1539")
+    embed = Embed(title=f"{emoji1} Información", description=f"{user.mention} 📛 ha **salido** de servicio!", color=0x00FF0000,timestamp=ctx.message.created_at)
+    embed.set_footer(text="Hora de salida ")
     await ctx.send(embed=embed)
+# »»————-————  FIN ENTRAR Y SALIR EN SERVICIO　————————-««
 
+
+# »»————-————  INFORMACION DEL USUARIO　————————-««
 @bot.command()
-async def userinfo(ctx, member: discord.Member = None): #COMANDO USERINFO
+async def userinfo(ctx, member: discord.Member = None):
     emoji3 = discord.utils.get(bot.emojis, name='info')
     if member == None:
         member = ctx.author
@@ -221,9 +269,12 @@ async def userinfo(ctx, member: discord.Member = None): #COMANDO USERINFO
     embed.set_thumbnail(url=member.avatar)
     embed.set_footer(text="user info | managed by: Taylor.dll#1539")
     await ctx.send(embed=embed)
+# »»————-————  FIN INFORMACION DEL USUARIO　————————-««
 
+
+# »»————-————  MOSTRAR AVATAR DE UN X USUARIO　————————-««
 @bot.command()
-async def img(ctx, member: discord.Member = None): #comando para obtener la imagen del perfil de un user determinado
+async def av(ctx, member: discord.Member = None): #comando para obtener la imagen del perfil de un user determinado
     if member == None:
         member = ctx.author
     embed = discord.Embed(title="",description="",color=0x339CFF)
@@ -231,5 +282,30 @@ async def img(ctx, member: discord.Member = None): #comando para obtener la imag
     embed.set_author(name=member.name,icon_url=member.avatar)
     embed.set_footer(text=f"Comando usado por {ctx.author}")
     await ctx.reply(embed=embed)
+# »»————-————  FIN MOSTRAR AVATAR　————————-««
 
-bot.run('T O K E N')
+
+
+@bot.command(pass_context=True)
+@commands.has_permissions(manage_roles=True)
+@commands.has_permissions(administrator=True)
+async def addrole(ctx, user: discord.Member, role: discord.Role):
+    await user.add_roles(role)
+    tay=discord.Embed(title="Added role successfully", description=f"Role {role.name} was successfully given to {user.name}", color=0x3498db)
+    await ctx.send(embed=tay)
+
+     # < ======================== LOG ==================================================>
+    tay=discord.Embed(timestamp=ctx.message.created_at, title="[📡] Logs", color=0x3498db)
+    tay.add_field(name="Someone is using commands", value=f"User: {ctx.message.author}", inline=False)
+    tay.add_field(name="Command", value=f"!addrole", inline=False)
+    tay.add_field(name="Also added role", value=role.name)
+    tay.add_field(name="User ID", value=ctx.message.author.id, inline=False)
+    tay.set_footer(text="logs | addrole")
+    logchannel = bot.get_channel(1001644299949183079)
+    await logchannel.send(embed=tay)
+    # < ======================== LOG ==================================================>
+
+
+
+
+bot.run('t o k e n')
