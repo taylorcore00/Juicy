@@ -1,4 +1,3 @@
-
 # »»————-　IMPORT DISCORD IMPORTANT　————-««
 
 import discord
@@ -19,7 +18,6 @@ import asyncio
 import datetime
 import pytz
 import requests
-from pytube import YouTube
 # »»————-　FIN IMPORT GENERAL 　————-««
 
 
@@ -70,9 +68,8 @@ async def on_ready():
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
-        tay = discord.Embed(timestamp=ctx.message.created_at, description ="➛ *Use* **.Help** *para ver todos los comandos disponibles*", color=0x3498db)
-        tay.set_author(name="Comando incorrecto o el mismo no existe", icon_url='https://cdn.discordapp.com/emojis/1097546086119375028.webp?size=96&quality=lossless')
-        tay.set_footer(text=f"menu error de comando | ")
+        tay = discord.Embed(timestamp=ctx.message.created_at, description ="➛ *Use* **.Help** *para ver todos los comandos disponibles*", color=0xD60909)
+        tay.set_author(name="🛑 Comando incorrecto o el mismo no existe")
         await ctx.send(embed=tay)
 
 
@@ -164,29 +161,50 @@ async def roles(ctx):
 
 # »»————-  SCANNER URL WITH VIRUSTOTAL　————-««
 @bot.command()
-async def vtlink(ctx,link):
-    api = "a p i v i r u s t o t a l"
-    url = link
-    vt = VirusTotalPublicApi(api)
-    url_report = vt.get_url_report(url)
-    total = url_report['results']['total']
-    pos = url_report['results']['positives']
-    page = url_report['results']['permalink']
-    if pos > 0:
-        #si entra por el if EL ARCHIVO ES MALICIOSO
-        embed = discord.Embed(title= f"🛑 | ¡El link es malicioso! {pos}/{total}",color=0xFf1200,url=page)
-        for key in url_report['results']['scans']:
-            if url_report['results']['scans'][key]["detected"] == True:
-                result = url_report['results']['scans'][key]['result']
-                embed.add_field(name=f"{key} `{result}`",value=f"",inline=False)
-                embed.set_thumbnail(url="https://cdn3d.iconscout.com/3d/premium/thumb/malware-5161207-4323229.png")
-                embed.set_footer(text="scaneo de url | managed by: Taylor.dll#1539")
+async def vtlink(ctx,link = None):
+    if link == None:    
+        # < =============== Animation ================= >
+        scanner=discord.Embed(description="Comprobando link. . .", color=0x3498db)
+        scanner.set_author(name="Por favor espera",icon_url="https://www.ivymount.org/wp-content/themes/fathom/preview.gif")
+        aaa=discord.Embed(title="",description="Error, no colocaste un link", color=discord.Color.gold())
+        msg = await ctx.send(embed=scanner)
+        await asyncio.sleep(2)
+        await msg.edit(embed=aaa)
+        return
+        # < =============== Animation ================= >
     else:
-        embed = discord.Embed(title= f"🌐 | ¡El link es seguro! {pos}/{total}",description=f"Ningun **Enginee** lo detecto como **Malware**\n```\n{pos} malware\n```",color=0x008cff,url=page)
-        # result = url_report['results']['scans'][key]['result']
-        embed.set_thumbnail(url="https://murrayofmelbourne.files.wordpress.com/2022/11/6eb7e83d-4b16-4efa-8422-22120e79452e.png")
-        embed.set_footer(text="scaneo de url | managed by: Taylor.dll#1539")
-    await ctx.send(embed = embed)
+
+        api = "a p i"
+        url = link
+        vt = VirusTotalPublicApi(api)
+        url_report = vt.get_url_report(url)
+        total = url_report['results']['total']
+        pos = url_report['results']['positives']
+        page = url_report['results']['permalink']
+
+        # < =============== Animation ================= >
+        scannerr=discord.Embed(description="Comprobando link. . .", color=0x3498db)
+        scannerr.set_author(name="Por favor espera",icon_url="https://www.ivymount.org/wp-content/themes/fathom/preview.gif")
+        aaaa=discord.Embed(title="✓", color=discord.Color.green())
+        msg = await ctx.send(embed=scannerr)
+        await asyncio.sleep(2)
+        await msg.delete()
+        # < =============== Animation ================= > 
+        if pos > 0:
+            #si entra por el if EL ARCHIVO ES MALICIOSO
+            embed = discord.Embed(title= f"🛑 | ¡El link es malicioso! {pos}/{total}",color=0xFf1200,url=page)
+            for key in url_report['results']['scans']:
+                if url_report['results']['scans'][key]["detected"] == True:
+                    result = url_report['results']['scans'][key]['result']
+                    embed.add_field(name=f"{key} `{result}`",value=f"",inline=False)
+                    embed.set_thumbnail(url="https://cdn3d.iconscout.com/3d/premium/thumb/malware-5161207-4323229.png")
+                    embed.set_footer(text="scaneo de url | managed by: Taylor.dll#1539")
+        else:
+            embed = discord.Embed(title= f"🌐 | ¡El link es seguro! {pos}/{total}",description=f"Ningun **Enginee** lo detecto como **Malware**\n```\n{pos} malware\n```",color=0x008cff,url=page)
+            # result = url_report['results']['scans'][key]['result']
+            embed.set_thumbnail(url="https://murrayofmelbourne.files.wordpress.com/2022/11/6eb7e83d-4b16-4efa-8422-22120e79452e.png")
+            embed.set_footer(text="scaneo de url | managed by: Taylor.dll#1539")
+        await ctx.send(embed = embed)
 
 # »»————-————  FIN SCANNER URL 　————————-««
 
@@ -218,15 +236,16 @@ async def Help(ctx):
     aca = bot.get_guild(1072874852026961972)
     emoji4 = discord.utils.get(bot.emojis, name='cog_gear_work_machine18')
     user = ctx.author
-    embed = discord.Embed(title=f"📘 Informacion sobre comandos",description="",color=0x0083FF)
-    embed.add_field(name="Informacion sobre un usuario",value="➛ `.userinfo`",inline=False)
-    embed.add_field(name="Link Scanner",value="➛ `.vtlink` https://chat.openai.com/ ",inline=False)
-    embed.add_field(name="Entrar y salir de servicio",value="➛ `.entrar` y/o ➛ `.salir`",inline=False)
-    embed.add_field(name="Formulario",value="➛ `.form`",inline=True)
-    embed.add_field(name="habilitado unicamente en:",value=f"`{aca.name}`",inline=True)
-    embed.add_field(name="",value="📩 Discord and support | `proximamente`",inline=False)
-    embed.set_footer(text="menu help | managed by: Taylor.dll#1539")
-    await ctx.reply(embed=embed)
+    ehelp = discord.Embed(title="👨‍💻 Informacion sobre comandos",description="",color=0x0083FF)
+    ehelp.add_field(name="",value="Ver informacion de un usuario```.userinfo```",inline=True)
+    ehelp.add_field(name="",value="Ver avatar de un usuario```.av @tag o ID```",inline=True)
+    ehelp.add_field(name="",value="Link scanner```.vtlink https://chat.openai.com/```",inline=False)
+    ehelp.add_field(name="",value="Agregar roles a un user```.addrole @user @role```",inline=False)
+    ehelp.add_field(name="Comandos privados [Mecanico A.C.A]",value="",inline=False)
+    ehelp.add_field(name="",value="Entrar o salir de servicio ```.entrar y/o .salir```",inline=True)
+    ehelp.add_field(name="",value="Formulario ```.form```",inline=True)
+    ehelp.add_field(name="",value="**📩 Discord and support | https://discord.gg/GAjSbah6**",inline=False)
+    await ctx.reply(embed=ehelp)
 # »»————-————  FIN MENU HELP　————————-««
 
 
@@ -291,20 +310,19 @@ async def av(ctx, member: discord.Member = None): #comando para obtener la image
 @commands.has_permissions(administrator=True)
 async def addrole(ctx, user: discord.Member, role: discord.Role):
     await user.add_roles(role)
-    tay=discord.Embed(title="Added role successfully", description=f"Role {role.name} was successfully given to {user.name}", color=0x3498db)
-    await ctx.send(embed=tay)
+    embedrole=discord.Embed(title="Rol agregado con exito", description=f"El {role.name} fue colocado a {user.name}", color=0x3498db)
+    await ctx.send(embed=embedrole)
 
      # < ======================== LOG ==================================================>
-    tay=discord.Embed(timestamp=ctx.message.created_at, title="[📡] Logs", color=0x3498db)
-    tay.add_field(name="Someone is using commands", value=f"User: {ctx.message.author}", inline=False)
-    tay.add_field(name="Command", value=f"!addrole", inline=False)
-    tay.add_field(name="Also added role", value=role.name)
-    tay.add_field(name="User ID", value=ctx.message.author.id, inline=False)
-    tay.set_footer(text="logs | addrole")
+    embedrole=discord.Embed(timestamp=ctx.message.created_at, title="[📡] Logs", color=0x3498db)
+    embedrole.add_field(name="Someone is using commands", value=f"User: {ctx.message.author}", inline=False)
+    embedrole.add_field(name="Command", value=f"!addrole", inline=False)
+    embedrole.add_field(name="Also added role", value=role.name)
+    embedrole.add_field(name="User ID", value=ctx.message.author.id, inline=False)
+    embedrole.set_footer(text="logs | addrole")
     logchannel = bot.get_channel(1001644299949183079)
-    await logchannel.send(embed=tay)
+    await logchannel.send(embed=embedrole)
     # < ======================== LOG ==================================================>
-
 
 
 
