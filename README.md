@@ -4,6 +4,11 @@ Juicy es un bot para discord creado desde cero, en donde ofrece diferentes coman
 
 Actualmente el bot se encuentra Offline, pero esta a la venta.
 
+# SISTEMA DE TICKET (BETA)
+Implementamos un sistema de tickets propio, con diferentes funciones y comandos para un servidor grande
+```bash
+Tiene menu de botones, botones, comandos dentro de los tickets, clasificaciones de rangos, database de los contadores de los tickets, etcetera.
+```
 # Comandos
 
 Tiene comandos publicos, privados en donde los usé para un servidor de roleplay GTAV
