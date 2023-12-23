@@ -1,6 +1,6 @@
-# TayAssist Bot Discord
+# Juicy Bot Discord
 
-TayAssist es un bot para discord creado desde cero, en donde ofrece diferentes comandos para moderacion, seguridad, control, etcetera.
+Juicy es un bot para discord creado desde cero, en donde ofrece diferentes comandos para moderacion, seguridad, control, etcetera.
 
 Actualmente el bot se encuentra Offline, pero esta a la venta.
 
