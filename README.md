@@ -30,6 +30,9 @@ Utilizando una api de Virus Total
 ```bash
 .removerole @tag > Saca un rango determinado a un user.
 ```
+```bash
+.imagenes (busqueda) > Muestra 100 fotos de la busqueda (Por ejemplo: Si buscamos "perro", nos muestra 100 imagenes de perros)
+```
 
 ## Eventos del bot
 
